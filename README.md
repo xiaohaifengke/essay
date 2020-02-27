@@ -4,6 +4,7 @@
 
 - Javascript
   - [Event Loop](javascript/event-loop)
+  - [关于debounce、throttle和rAF](javascript/debounce-throttle-rAF)
 
 - Vue
   - [记一次Vue项目优化要点](vue/project-optimization)
