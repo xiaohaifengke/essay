@@ -16,7 +16,7 @@
   >   - mousemove等会在短时间内频发触发的事件的场景
   >   
   > - **requestAnimationFrame:**浏览器原生API，和 `throttle` 有一定的相似性，间隔时间不能指定，更倾向于用在使动画更平滑的场景。**注意：不支持IE9**。
-    
+
 - 当在项目中需要使用`debounce`和`throttle`时，建议直接使用`Lodash`库。  
   为了避免因为使用lodash中的个别方法而引入整个lodash库，可以使用如下方式：
 
