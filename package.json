@@ -1,0 +1,29 @@
+{
+  "name": "essays",
+  "version": "1.0.0",
+  "description": "a personal blog",
+  "main": "index.html",
+  "directories": {
+    "demo": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init": "docsify serve .",
+    "init:local": "docsify serve . --local true",
+    "serve": "docsify serve . --open true --port 5679"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaohaifengke/essay.git"
+  },
+  "keywords": [
+    "blog",
+    "essay"
+  ],
+  "author": "jhail",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiaohaifengke/essay/issues"
+  },
+  "homepage": "https://github.com/xiaohaifengke/essay#readme"
+}
