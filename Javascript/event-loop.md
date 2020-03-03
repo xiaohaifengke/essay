@@ -22,5 +22,5 @@
       在当前Macrotask执行完后，会执行 Microtasks 中的所有的Microtask，执行过程中产生的Macrotask 和 Microtask 同样会追加到 Macrotasks 和 Microtasks，
       该过程会把所有的（包括执行过程中追加的）Microtask执行完之后再从Macrotasks中取下一个Macrotask，执行完后再执行所有的Microtask，如此反复。
       
-      收录一个很不错的关于Macrotasks 和 Microtasks的问答。[Difference between microtask and macrotask within an event loop context](https://stackoverflow.com/questions/25915634/difference-between-microtask-and-macrotask-within-an-event-loop-context)
-      
+      收录一个很不错的关于Macrotasks 和 Microtasks的问答。[Difference between microtask and macrotask within an event loop context](https://stackoverflow.com/questions/25915634/difference-between-microtask-and-macrotask-within-an-event-loop-context)  
+      新增值得一看的好文章 [HTML系列：macrotask和microtask](https://zhuanlan.zhihu.com/p/24460769) 和 [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
