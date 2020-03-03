@@ -9,9 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "init": "docsify serve .",
-    "init:local": "docsify serve . --local true",
-    "serve": "docsify serve . --open --port 5679"
+    "parcel": "parcel ./src/**/*.html --open",
+    "build": "parcel build ./src/**/*.html --no-source-maps -d ./dist --public-url ./"
   },
   "repository": {
     "type": "git",
@@ -33,5 +32,11 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "parcel": "^1.12.4",
     "parcel-plugin-change-file": "^1.3.0"
+  },
+  "parcel-plugin-change-file": {
+    "copy": []
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
   }
 }
