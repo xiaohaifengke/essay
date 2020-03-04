@@ -4,3 +4,4 @@
 # Project files
 node_modules/
 .cache/
+.temp
