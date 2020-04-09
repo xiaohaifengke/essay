@@ -3,11 +3,12 @@
 
 
 - Javascript
-  - [Event Loop](javascript/event-loop)
-  - [关于debounce、throttle和rAF](javascript/debounce-throttle-requestAnimationFrame)
+  - [Event Loop](Javascript/event-loop)
+  - [关于debounce、throttle和rAF](Javascript/debounce-throttle-requestAnimationFrame)
+  - [Javascript中this指向总结](Javascript/js-this)
 
 - Vue
-  - [记一次Vue项目优化要点](vue/project-optimization)
+  - [记一次Vue项目优化要点](Vue/project-optimization)
   - [Vue原理总结](Vue/vue-summary)
   
 - Java
