@@ -16,7 +16,7 @@
       setImmediate为非标准特性，该方法可能不会被批准成为标准，目前只有最新版本的 Internet Explorer 和Node.js 0.10+实现了该方法，它遇到了 Gecko(Firefox) 和Webkit (Google/Apple) 的阻力；  
       process.nextTick为Node环境；  
       Object.observe已被废弃了；
-      > Note: 在浏览器环境中，Microtask内部是有优先级的差别的，async/await优先级是低于Promise的。在node环境中优先级是相同的。
+      > Note: [promise, async, await, execution order](https://github.com/xianshenglu/blog/issues/60)
     
     2. 简述 Macrotasks 和 Microtasks 的执行方式  
       js加载script标签，即建立了第一个Macrotask，该执行过程可能会产生其它的 Macrotask 和 Microtask 并分别放入Macrotasks 和 Microtasks。
@@ -87,5 +87,6 @@
       async1 end
       setTimeout
       ```
-      对比打印结果，主要是 `async1 end`的打印顺序不同。
+      对比打印结果，发现 `async1 end`的打印顺序不同。
       在node环境中，`async1 end`是比`promise2`先打印的；在浏览器环境中，却是在打印`promise3`之后才打印`async1 end`。
+      产生差异的原因可以查看[async await 和 promise微任务执行顺序问题](https://segmentfault.com/q/1010000016147496)。
