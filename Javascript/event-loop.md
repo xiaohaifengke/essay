@@ -11,11 +11,12 @@
     1. 简介：  
       js中异步任务分为两种，即 Macrotasks（宏任务） 和 Microtasks（微任务）。产生两种异步任务的方式如下：  
       **macrotasks:** script tag, setTimeout, setInterval, setImmediate, requestAnimationFrame, I/O, UI rendering  
-      **microtasks:** process.nextTick, Promises, Object.observe, MutationObserver  
+      **microtasks:** process.nextTick, Promises, Object.observe, MutationObserver, async/await  
       其中：  
       setImmediate为非标准特性，该方法可能不会被批准成为标准，目前只有最新版本的 Internet Explorer 和Node.js 0.10+实现了该方法，它遇到了 Gecko(Firefox) 和Webkit (Google/Apple) 的阻力；  
       process.nextTick为Node环境；  
       Object.observe已被废弃了；
+      > Note: 在浏览器环境中，Microtask内部是有优先级的差别的，async/await优先级是低于Promise的。在node环境中优先级是相同的。
     
     2. 简述 Macrotasks 和 Microtasks 的执行方式  
       js加载script标签，即建立了第一个Macrotask，该执行过程可能会产生其它的 Macrotask 和 Microtask 并分别放入Macrotasks 和 Microtasks。
@@ -24,3 +25,67 @@
       
       收录一个很不错的关于Macrotasks 和 Microtasks的问答。[Difference between microtask and macrotask within an event loop context](https://stackoverflow.com/questions/25915634/difference-between-microtask-and-macrotask-within-an-event-loop-context)  
       新增值得一看的好文章 [HTML系列：macrotask和microtask](https://zhuanlan.zhihu.com/p/24460769) 和 [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
+
+    3. 写出下面代码执行后的打印结果
+      ```javascript
+      async function async1() {
+         console.log('async1 start');
+         await async2();
+         console.log('async1 end');
+       }
+       
+       async function async2() {
+         console.log('async2 start');
+         return new Promise((resolve, reject) => {
+           resolve();
+           console.log('async2 promise');
+         })
+       }
+       
+       console.log('script start');
+       setTimeout(function() {
+         console.log('setTimeout');
+       }, 0);  
+       
+       async1();
+       
+       new Promise(function(resolve) {
+         console.log('promise1');
+         resolve();
+       }).then(function() {
+         console.log('promise2');
+       }).then(function() {
+         console.log('promise3');
+       });
+       console.log('script end');
+      ```
+      
+      node环境中打印结果如下：
+      ```
+      script start
+      async1 start
+      async2 start
+      async2 promise
+      promise1
+      script end
+      async1 end
+      promise2
+      promise3
+      setTimeout
+      ```
+      
+      chrome中打印结果如下：
+      ```
+      script start
+      async1 start
+      async2 start
+      async2 promise
+      promise1
+      script end
+      promise2
+      promise3
+      async1 end
+      setTimeout
+      ```
+      对比打印结果，主要是 `async1 end`的打印顺序不同。
+      在node环境中，`async1 end`是比`promise2`先打印的；在浏览器环境中，却是在打印`promise3`之后才打印`async1 end`。
