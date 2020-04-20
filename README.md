@@ -10,6 +10,7 @@
 - Vue
   - [记一次Vue项目优化要点](Vue/project-optimization)
   - [Vue原理总结](Vue/vue-summary)
+  - [项目总结](Vue/project-summary)
   
 - Java
   - [Java开发中遇到的问题](Java/java-knowledge-point)
