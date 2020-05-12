@@ -5,25 +5,121 @@
   <title>essays - try to take notes by liu at 2017-07-18</title>
   <link rel="icon" href="/favicon.ico"/>
   <link rel="shortcut icon" href="/favicon.ico"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta name="description" content="try to take notes by liu at 2017-07-18">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <!--<link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">-->
+  <link rel="stylesheet" title="vue" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" title="buble" disabled href="//cdn.jsdelivr.net/npm/docsify/lib/themes/buble.css">
+  <link rel="stylesheet" title="dark" disabled href="//cdn.jsdelivr.net/npm/docsify/lib/themes/dark.css">
+  <link rel="stylesheet" title="pure" disabled href="//cdn.jsdelivr.net/npm/docsify/lib/themes/pure.css">
+  <link rel="stylesheet" title="dolphin" disabled href="//cdn.jsdelivr.net/npm/docsify/lib/themes/dolphin.css">
+  <style>
+    #logo {
+      margin: 23px 0 0 25px;
+      position: absolute;
+      left: 0;
+      text-align: left;
+      z-index: 10;
+      font-size: 1.5em;
+      line-height: 32px;
+      color: #273849;
+      font-family: "Dosis", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    #logo img, #logo span {
+      vertical-align: middle;
+    }
+
+    .cover.show {
+      padding: 55px;
+    }
+  </style>
 </head>
 <body>
-  <div id="app">加载中...</div>
-  <script>
-    window.$docsify = {
-      loadSidebar: 'README.md',
-      autoHeader: true,
-      alias: {
-        '/.*/_sidebar.md': '/_sidebar.md'
-      },
-      subMaxLevel: 2,
-      name: 'Personal notes',
-      repo: ''
-    }
-  </script>
-  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<!--<a id="logo" href="/">-->
+<!--  <img src="/favicon.ico" alt="jhail's blog logo">-->
+<!--  <span>Jhail's Blog</span>-->
+<!--</a>-->
+<div id="app">加载中...</div>
 </body>
 </html>
+<script>
+  window.$docsify = {
+    coverpage: true,
+    loadNavbar: '_navbar.md',
+    mergeNavbar: true,
+    homepage: 'README.md',
+    loadSidebar: true,
+    autoHeader: true,
+    auto2top: true,
+    alias: {
+      '/.*/_sidebar.md': '/_sidebar.md',
+      '/.*/_navbar.md': '/_navbar.md'
+    },
+    subMaxLevel: 2,
+    onlyCover: false,
+    logo: '/favicon.ico',
+    name: 'Personal notes',
+    repo: 'https://github.com/xiaohaifengke/essay',
+    // routerMode: 'history',
+    search: {
+      maxAge: 86400000, // Expiration time, the default one day
+      paths: 'auto',
+      placeholder: '搜索',
+      noData: '找不到结果',
+      // Headline depth, 1 - 6
+      depth: 6,
+      hideOtherSidebarContent: false // whether or not to hide other sidebar content
+    },
+    notFoundPage: true,
+    executeScript: true
+  }
+</script>
+<script>
+  // hack
+  window.addEventListener('hashchange', function (e) {
+    var oldUrl = e.oldURL.match(/[^\?]+(?=\?)?/)
+    var newUrl = e.newURL.match(/[^\?]+(?=\?)?/)
+    oldUrl = oldUrl && oldUrl[0]
+    newUrl = newUrl && newUrl[0]
+    if (oldUrl !== newUrl) hackMethod()
+  })
+  hackMethod()
+
+  function hackMethod () {
+    var themeWrapper = document.querySelector('.theme-wrapper')
+    var li = document.querySelector('.theme-wrapper li')
+    themeWrapper && !li.onclick ? themeChoice() : setTimeout(hackMethod, 500)
+  }
+
+  function themeChoice () {
+    var lis = document.querySelectorAll('.theme-wrapper li')
+    var themes = document.querySelectorAll('[rel="stylesheet"]')
+
+    lis.forEach(function (li) {
+      if (!li.onclick) {
+        li.onclick = function (e) {
+          var title = e.target.getAttribute('data-theme')
+
+          themes.forEach(function (theme) {
+            theme.disabled = theme.title !== title
+          })
+        }
+      }
+    })
+  }
+</script>
+<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-git.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-java.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
+
