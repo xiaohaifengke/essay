@@ -99,6 +99,7 @@
 
 
 ## 6. websocket
+  IE仅10/11支持。Edge,Firefox,Chrome常用版本均支持。
   [websocket-client](https://github.com/xiaohaifengke/websocket-client)
 
 ## 7. video.js
@@ -152,9 +153,10 @@
 
 ## 9. svg & canvas
 
-## 10. 
+## 10. Web Notifications
+  IE不支持；火狐支持（>=22）chrome低版本支持，高版本需要在https协议下支持，Edge支持（>=14）。
 
-## 11. 
+## 11. Echarts
 
 ## 12. 
 

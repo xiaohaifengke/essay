@@ -90,3 +90,4 @@
       对比打印结果，发现 `async1 end`的打印顺序不同。
       在node环境中，`async1 end`是比`promise2`先打印的；在浏览器环境中，却是在打印`promise3`之后才打印`async1 end`。
       产生差异的原因可以查看[async await 和 promise微任务执行顺序问题](https://segmentfault.com/q/1010000016147496)。
+
