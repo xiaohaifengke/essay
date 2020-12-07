@@ -24,6 +24,9 @@
   - [Java反射机制](Java/reflection.md)
   - [Java泛型](Java/generics.md)
  
+- CI/CD
+  - [Git相关实用操作](dev-tools/git.md)
+  
 - 开发工具
   - [Git相关实用操作](dev-tools/git.md)
 
