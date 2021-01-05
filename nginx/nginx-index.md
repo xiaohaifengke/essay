@@ -32,6 +32,17 @@
 | 停止防火墙     | systemctl stop firewalld.service    |
 | 永久关闭防火墙 | systemctl disable firewalld.service |
 
+```
+# 设置防火墙永久开放8080端口
+firewall-cmd --zone=public --add-port=8080/tcp --permanent
+# 新开放端口后需要重启firewall
+systemctl reload firewalld.service
+# 查看已开放的端口
+firewall-cmd --zone=public --list-ports
+```
+
+
+
 ### 3.3 确认停用SELinux
 
    > 安全增强型 Linux（Security-Enhanced Linux）简称 SELinux，它是一个 Linux 内核模块，也是 Linux 的一个安全子系统。
