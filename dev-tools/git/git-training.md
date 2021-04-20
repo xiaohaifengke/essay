@@ -463,7 +463,7 @@ git merge --squash
 ### stash
 
 - 能够将所有未提交的修改保存至堆栈中，用于后续恢复当前工作区内容
-- 如果新增的文件没有提交到**暂存区（使用 git add . 追踪新的文件）**，使用该命令会提示 `No local changes to save` ，无法将修改保存到堆栈中
+- 如果新增的文件没有提交到**暂存区**，使用该命令会提示 `No local changes to save` ，无法将修改保存到堆栈中（解决方案：可以先使用 `git add . `追踪新的文件，再执行`git stash`）
 
 **使用场景：** 当你接到一个修复紧急 bug 的任务时候，一般都是先创建一个新的 bug 分支来修复它，然后合并，最后删除。但是，如果当前你正在开发功能中，短时间还无法完成，无法直接提交到仓库，这时候可以先把当前工作区的内容 `git stash` 一下，然后去修复 bug，修复后，再 `git stash pop`，恢复之前的工作内容。
 
@@ -495,6 +495,10 @@ git stash show -p "stash@{index}"
 
 ### diff
 
+> ★★★：当工作区有改动，临时区为空，diff的对比是“**工作区**与**最后一次commit提交的仓库**的共同文件”；当工作区有改动，临时区不为空，diff对比的是“**工作区**与**暂存区**的共同文件”。
+>
+> 下面只是简单描述工作区和暂存区的比较
+
 ```git
 # 查看工作区和暂存区单个文件的对比
 git diff filename 
@@ -511,17 +515,19 @@ git diff --stat
 git diff --cached/--staged
 # 查看工作区与上次提交到本地仓库的快照（即最新提交到本地仓库的快照）的对比
 git diff branchname
+
 # 查看工作区与 HEAD 指向（默认当前分支最新的提交）的对比
+# 显示工作目录(已track但未add文件)和暂存区(已add但未commit文件)与最后一次commit之间的的所有不相同文件的增删改。
 git diff HEAD   
 
-# 查看两个本地分支中某一个文件的对比
-git diff branchname..branchname filename 
+# 查看两个本地分支中某一个文件的对比(会以branchname1为参考，列出branchname2相对于branchname1的区别)
+git diff branchname1..branchname2 filename
 # 查看两个本地分支所有的对比
-git diff branchname..branchname 
+git diff branchname1..branchname2
 # 查看远程分支和本地分支的对比
-git diff origin/branchname..branchname 
+git diff origin/branchname1..branchname2
 # 查看远程分支和远程分支的对比
-git diff origin/branchname..origin/branchname 
+git diff origin/branchname1..origin/branchname2
 
 # 查看两个 commit 的对比
 git diff commit1..commit2
@@ -536,10 +542,14 @@ git diff commit1..commit2
 git remote
 # 查看关联的远程仓库的详细信息
 git remote -v 
-# 删除远程仓库的 “关联”
-git remote rm projectname 
+# 添加远程仓库的 “关联” (origin是默认名称，也可以使用其它自定义的名称)
+git remote add origin <newurl>
+# 查看远程仓库的 “关联”
+git remote get-url origin
 # 设置远程仓库的 “关联”
 git remote set-url origin <newurl>
+# 删除远程仓库的 “关联”
+git remote rm origin 
 ```
 
 
@@ -602,7 +612,8 @@ git rm --cached filename
 #### checkout 详解
 
 ```git
-# 恢复暂存区的指定文件到工作区
+# 恢复暂存区的指定文件到工作区（如果暂存区没有文件，则恢复本地仓库中的指定文件到工作区）
+# 其实可以理解为把已经被git跟踪过的文件的最新修改（未添加到缓存区的更改）重置掉
 git checkout <filename>
 # 恢复暂存区的所有文件到工作区
 git checkout .
