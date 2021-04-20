@@ -595,7 +595,6 @@ git push origin :refs/tags/<tagname>
 git rm filename  
 # 只删除暂存区的文件，不会删除工作区的文件
 git rm --cached filename 
-复制代码
 ```
 
 如果在配置 .gitignore 文件之前就把某个文件上传到远程仓库了，这时候想把远程仓库中的该文件删除，此时你配置 .gitignore 文件也没有用，因为该文件已经被追踪了，但又不想在本地删除该文件后再重新提交到远程仓库，这时候可以使用 `git rm --cached filename` 命令取消该文件的追踪，这样下次提交的时候，git 就不会再提交这个文件，从而远程仓库的该文件也会被删除
@@ -635,7 +634,6 @@ git checkout <当前你正在使用的分支>
 git checkout <commit_id>
 # 切换指定 tag 
 git checkout <tag>
-复制代码
 ```
 
 - **在开发的正常阶段，`HEAD` 一般指向 master 或是其他的本地分支，但当你使用 `git checkout <commit id>` 切换到指定的某一次提交的时候，`HEAD` 就不再指向一个分支了——它直接指向一个提交，HEAD 就会处于 detached 状态（游离状态）**。
@@ -672,7 +670,6 @@ git reset --mixed  <commit>
 git reset --soft  <commit>
 # 将当前分支的指针指向为指定 commit（该提交之后的提交都会被移除），同时重置暂存区、工作区
 git reset --hard  <commit>
-复制代码
 ```
 
 - `git reset` 有很多种用法。它可以被用来移除提交快照，尽管它通常被用来撤销暂存区和工作区的修改。不管是哪种情况，它应该只被用于本地修改——你永远不应该重设和其他开发者共享的快照。
@@ -701,7 +698,6 @@ git revert HEAD~num
 git revert <commit_id>
 # 生成一个撤销指定提交版本的新提交，执行时不打开默认编辑器，直接使用 Git 自动生成的提交信息
 git revert <commit_id> --no-edit
-复制代码
 ```
 
 `git revert`命令用来**撤销某个已经提交的快照（和 reset 重置到某个指定版本不一样）**。它是在提交记录最后面加上一个撤销了更改的新提交，而不是从项目历史中移除这个提交，这避免了 Git 丢失项目历史。
@@ -724,7 +720,6 @@ git revert <commit_id> --no-edit
 git cherry-pick <commit_id>
 git cherry-pick <commit_id> <commit_id>
 git cherry-pick <commit_id>^..<commit_id>
-复制代码
 ```
 
 ### [git bisect](http://www.ruanyifeng.com/blog/2018/12/git-bisect.html)
@@ -768,7 +763,6 @@ git submodule update --init
 
 # 自动初始化并更新仓库中的每一个子模块， 包括可能存在的嵌套子模块
 git clone --recurse-submodules [URL]
-复制代码
 ```
 
 
@@ -776,6 +770,355 @@ git clone --recurse-submodules [URL]
 
 
 ## 7. 工作中常见问题的解决方式
+
+### 1）拉取别人的远程分支合并后，git 会存取这个拉取的记录，如果你不小心删了别人的上传的文件，这时候想要再拉取别人的分支是没用的，会显示 already-up
+
+这时候可以回滚代码，重新拉取。
+
+
+
+### 2、以前有过这样的经历：前后端、客户端的代码都存放在一个 git 仓库中，在根目录下各自新建项目目录。那么可以直接在自己的项目目录下使用 git 提交代码并且在各自的项目目录下配置 .gitignore 文件，不用在根目录下配置 .gitignore 文件，这样就互不影响了
+
+
+
+### 3、fatal：refusing to merge unrelated histories 拒绝合并不相关的历史
+
+在 git 2.9.2 之后，不可以合并没有相同结点的分支（分支之间自仓库建立后，从来没有过互相拉取合并）。如果需要合并两个不同结点的分支，如下：
+
+```git
+$ git pull origin branchName --allow-unrelated-histories
+$ git merge branchName --allow-unrelated-histories
+```
+
+这个功能是可以让大家不要把仓库上传错了，如果会加上这个代码，那么就是自己确定了上传。旧版本的 Git 很容易就把代码传错了，现在可以看到，如果上传的不是之前的，那么就需要加代码上传。 正常情况下，都是先建立仓库，然后切多个分支，分支先去拉取合并主分支的内容，然后再各自开发， 如果建立仓库后，各个分支没有区拉取主分支的代码，之后各个分支之间想要合并时就会报错。
+
+
+
+### 4、合并分支时出现问题，想要解除合并状态
+
+```git
+error: merge is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+```
+
+当远程分支和本地分支发生冲突后，git 保持合并状态，你如果没有去解决完所有的冲突，那么 git 会一直保持这个状态，你就无法再提交代码。只有先解除合并状态后，才能继续提交。执行命令前最好先备份一下，有可能本地做的修改会被远程分支覆盖掉。
+
+```git
+# 解除合并状态
+$ git merge --abort 
+```
+
+
+
+### 5、不小心把某些文件上传到远程 git 仓库/想要删除远程仓库中的文件
+
+```git
+# 删除暂存区和工作区的文件
+$ git rm filename  
+# 只删除暂存区的文件，不会删除工作区的文件
+$ git rm --cached filename 
+```
+
+如果在配置 .gitignore 文件之前就把某个文件上传到远程仓库了，这时候想把远程仓库中的该文件删除，此时你配置 .gitignore 文件也没有用，因为该文件已经被追踪了，但又不想在本地删除该文件后再重新提交到远程仓库，这时候可以使用 `git rm --cached filename` 命令取消该文件的追踪，这样下次提交的时候，git 就不会再提交这个文件，从而远程仓库的该文件也会被删除
+
+
+
+### 6、将本地新建的项目上传到新建的远程仓库上
+
+之前没有进行过关联，即没有通过 clone 远程项目到本地再开始做项目，而是先本地新建了一个项目，然后想传到远程仓库上。
+
+```git
+# 将本地仓库和远程仓库关联起来
+$ git remote add origin 远程仓库地址
+# 将本地的 master 分支推送到 origin 主机，同时指定 origin 为默认主机
+$ git push -u origin master
+# 上面的命名执行后，下次再从本地库上传内容的时候只需下面这样就可以了
+$ git push
+```
+
+
+
+### 7、HEAD 指针既可以指向分支（默认指向当前分支），也可以指向快照，当指向的是快照时，这个时候指针的状态称之为游离状态（detached）
+
+
+
+### 8、创建与合并分支的原理
+
+[www.liaoxuefeng.com/wiki/896043…](https://www.liaoxuefeng.com/wiki/896043488029600/900003767775424)
+
+
+
+### 9、每次 git push 都要输入用户名、密码
+
+- step 1：生成公钥
+
+```git
+ssh-keygen -t rsa -C "xxxxx@xxxxx.com"  
+# Generating public/private rsa key pair...
+# 三次回车即可生成 ssh key
+```
+
+- step 2：查看已生成的公钥
+
+```git
+cat ~/.ssh/id_rsa.pub
+```
+
+- step3：复制已生成的公钥添加到 git 服务器
+
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/53da4a87ec52401da133bfc74501235d~tplv-k3u1fbpfcp-zoom-1.image)
+
+测试 ssh 是否能够连接成功
+
+```git
+$ ssh -T git@github.com
+```
+
+- step4：使用 ssh 协议 clone 远程仓库 或者 如果已经用 https 协议 clone 到本地了，那么就重新设置远程仓库
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+**使用 ssh 协议**
+
+```git
+$ git remote set-url origin git@xxx.com:xxx/xxx.git
+```
+
+- step5：创建文件存储用户名和密码
+
+一般为 C:\users\Administrator，也可以是你自己创建的系统用户名目录，文件名为 .git-credentials。由于在 Windows 中不允许直接创建以 "." 开头的文件，所以用命令行创建该文件。
+
+```git
+$ touch .git-credentials
+$ echo "http://{username}:{password}@github.com" >> ~/.git-credentials 
+$ git config --global credential.helper store
+```
+
+
+
+### 10、git 不允许提交空文件夹
+
+可以在当前目录下，添加一个 .gitkeep 文件
+
+
+
+### 11、有时候复制过来的文件，使用 `git add .` 无法进行文件追踪，可以使用 `git add -A` ，这也就是每次提交前都要 `git status` 的原因
+
+
+
+### 12、[同一台电脑配置多个 git 账号](https://github.com/jawil/notes/issues/2#)
+
+[github.com/jawil/notes…](https://github.com/jawil/notes/issues/2)
+
+
+
+### 13、Another git process seems to be running in this repository, e.g.
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+原因在于 Git 在使用过程中遭遇了奔溃，部分被上锁资源没有被释放导致的。
+
+**解决方案：** 进入项目文件夹下的 .git 文件中（显示隐藏文件夹或 `rm .git/index.lock`）删除 index.lock 文件即可。
+
+
+
+### 14、git commit -am "xxx" 有时候会失效，无法提交所有的修改
+
+`git commit -am "xxx"` 只会将被 **tracked** 的文件添加到暂存区并提交，而将文件添加到 git 管理是要使用 git add 命令，将新的文件 **tracked** 。（新建了文件之后，idea 会提示你是否需要加到 git 管理中。选择记住后，之后 idea 默认都会把新建的文件 **tracked** 化）
+
+
+
+### 15、git merge --no-ff 的作用
+
+- **禁止快进式（fast-forward）合并，会生成一个新的提交**
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+从合并后的代码来看，结果都是一样的，区别就在于 `--no-ff` 会让 git 生成一个新的提交对象。为什么要这样？通常我们把 master 作为主分支，上面存放的都是比较稳定的代码，提交频率也很低，而 feature 是用来开发特性的，上面会存在许多零碎的提交，快进式合并会把 feature 的提交历史混入到 master 中，搅乱 master 的提交历史。所以如果你根本不在意提交历史，也不爱管 master 干不干净，那么 `--no-ff` 其实没什么用。
+
+[segmentfault.com/q/101000000…](https://segmentfault.com/q/1010000002477106)
+
+
+
+### 16、git merge 与 git rebase 的区别
+
+[juejin.im/post/684490…](https://juejin.im/post/6844903546104135694#heading-9)
+
+[blog.csdn.net/liuxiaoheng…](https://blog.csdn.net/liuxiaoheng1992/article/details/79108233)
+
+[segmentfault.com/a/119000001…](https://segmentfault.com/a/1190000012897637?utm_source=tag-newest#articleHeader0)
+
+[segmentfault.com/a/119000001…](https://segmentfault.com/a/1190000018580144?utm_source=tag-newest)
+
+
+
+### 17、git log 无法正常显示中文
+
+```git
+# 试试
+$ git -c core.pager=more log
+# 如果可以显示中文的话，把 pager 设置为 more
+$ git config --global core.pager more
+```
+
+[www.zhihu.com/question/57…](https://www.zhihu.com/question/57162172)
+
+[www.playpi.org/2019031901.…](https://www.playpi.org/2019031901.html)
+
+
+
+### 18、git merge -m "xxx" 的时候可以附加信息
+
+- 默认是 Merge branch branchName
+
+**![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)**
+
+
+
+### 19、git pull 会拉取所有远程分支的代码到本地镜像仓库中
+
+想要 merge 别人的分支时：
+
+- 如果你的本地仓库中已经有了他人的分支（直接切换到他人分支，就会在本地生成一条他人的分支），就可以使用 merge branchname；
+- 如果你的本地仓库没有他人的分支，那么就得使用 merge origin/branchname 来合并
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+
+
+### 20、git branch -r/-a/-l 查看的都是本地镜像仓库中的分支，如果本地镜像仓库没有拉取远程仓库的代码，此时别人新推了一个分支到远程仓库，你这时候是查看不到这条新推的分支的
+
+
+
+### 21、git stash 存储未追踪的文件
+
+- 如果我们新建了文件，但是没有用 `git add .` 追踪文件，那么 `git stash` 是无法存储的
+
+```git
+$ git stash -u
+```
+
+
+
+### 22、如何在 github 上 pr 项目
+
+[segmentfault.com/a/119000002…](https://segmentfault.com/a/1190000020354906?utm_source=tag-newest)
+
+
+
+### 23、git push 无法提交代码
+
+**可能出现的报错：**
+
+- **remote:** Permission to xxxxx.git denied to xxx. fatal: unable to access '[github.com/](https://github.com/) xxxxx.git/': The requested URL returned error: 403
+
+- **remote:** You do not have permission to push to the repository via HTTPS
+
+  **fatal:** Authentication failed for '[gitee.com/xxx.git/](https://gitee.com/xxx.git/)'
+
+```git
+# 查看当前项目的 git 配置
+$ cat .git/config
+```
+
+- 查看本地项目的 .git/config 设置的仓库 url 地址和 github 使用的链接地址是否一致。`git push` 的数据协议有两种方式：`ssh` 和 `https`。如果不一致就需要切换 `url` 地址。
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+
+
+### 24、git 输错用户名和密码，后续的 git 操作一直报错
+
+```shell
+remote: Coding 提示: Authentication failed.
+remote: 认证失败，请确认您输入了正确的账号密码。
+fatal: Authentication failed for 'https://e.coding.net/xxx.git/'
+```
+
+在控制面板里找到凭据管理器，选中 Windows 凭据，找到 git 的凭据，点击编辑，输入所用 github 的正确用户名和密码。
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+
+
+### 25、lint-staged 失败
+
+![image.png](data:image/svg+xml;utf8,<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800" height="600"></svg>)
+
+可能你的项目名路径中包含了中文名，需要替换成英文名
+
+
+
+### 26、查看 git 安装目录
+
+- **Mac：** 在命令行中输入 `which git`，就会显示 git 的安装位置了
+- **Windows：** 打开cmd，输入 `where git`，就会显示 git 的安装路径了
+
+
+
+### 27、[Git中用vim打开、修改、保存文件](https://www.cnblogs.com/hezhiyao/p/9418468.html)
+
+
+
+### 28、[windows10 无法编辑 vimrc](https://jingyan.baidu.com/article/a3a3f8111d9ffb8da2eb8aff.html)
+
+
+
+### 29、[Windows下Git Bash中VIM打开文件中文乱码](https://www.cnblogs.com/MisterZZL/p/10783097.html)
+
+
+
+### 30、如何修改旧的 commit 的 message/如何将多个 commit 合成一个 commit/如何将多个间隔的 commit 合成一个 commit/
+
+```git
+git rebase -i
+```
+
+
+
+### 31、如果两个人都对某个文件进行了修改，一个是重命名文件，一个是修改文件内容，那么会起冲突吗？git 很智能，会自动合并这些修改
+
+如果两个人都对同一个文件重命名，此时会起冲突，git 不会自动处理，需要开发者自身去解决冲突
+
+
+
+### 32、git revert 失败：error: Commit faulty merge is a merge but no -m option was given、error: option `mainline' expects a number greater than zero
+
+[segmentfault.com/a/119000001…](https://segmentfault.com/a/1190000015792394?utm_source=tag-newest#item-3)
+
+[www.jianshu.com/p/3719dae37…](https://www.jianshu.com/p/3719dae37a92)
+
+```git
+git revert -m 1 
+```
+
+
+
+### 33、[git 创建一个空的分支](https://www.jianshu.com/p/a18487d987ac)
+
+在 Git 中创建分支，是必须有一个父节点的，也就是说必须在已有的分支上来创建新的分支，如果工程已经进行了一段时间，这个时候是无法创建空分支的。但是有时候就是需要创建一个空白的分支。
+
+```git
+$ git checkout --orphan emptyBranchName
+```
+
+该命令会生成一个叫 `emptybranch` 的分支，该分支会包含父分支的所有文件。但新的分支不会指向任何以前的提交，就是它没有历史，如果你提交当前内容，那么这次提交就是这个分支的首次提交。
+
+想要空分支，所以需要把当前内容全部删除，用 git 命令
+
+```git
+$ git rm -rf . // 注意：最后的‘.’不能少。
+```
+
+
+
+### 34、如何清空一个分支的所有提交
+
+先删除该分支，然后再新建一个空的分支（分支名就是删除的分支名）~~
+
+
 
 ## 8. 使用GitLab
 
