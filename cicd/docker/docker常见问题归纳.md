@@ -34,4 +34,30 @@ vi /etc/profile  #结尾追加
 export DOCKER_API_VERSION=1.39
 source  /etc/profile  #使配置生效
 ```
+## 3.Docker加载镜像报错 Error response from daemon: dockerError processing tar file(exit status 1): no space left on device
+
+问题原因：Docker加载镜像的空间不足了。
+
+问题确认：
+
+    step 1: `sudo docker info`查看Docker Root Dir: (默认为`/var/lib/docker`)  
+    step 2: `df -hl`查看磁盘空间占用情况，确认 `step 1中Docker Root Dir:`所在磁盘的剩余空间  
+解决方案：
+
+    方案一：扩展Docker Root Dir所在磁盘的空间就可以解决这个问题。
+    方案二：更改 Docker root path
+        step 1: 关闭 Docker 服务 `sudo systemctl stop docker`
+        step 2: 新建 Docker Root 路径 `sudo mkdir /root/docker`
+        step 3: 新建 Docker 配置文件 `sudo touch /etc/docker/daemon.json`
+        step 4: vim写入文件 `vim /etc/docker/daemon.json`
+        step 5: 在文件中加入json语句 `{"graph": "/root/docker"}`(当docker版本太低时，试试`{"data-root": "/root/docker"}`)
+        step 6: 重启docker 服务 `sudo systemctl start docker`，并 查看 `docker info`的`Docker Root Dir` 是否变为指定的root路径 `/root/docker`
+
+## 4. 删除指定容器和虚悬镜像
+删除指定容器：
+
+    先停止容器：docker ps -f name=containername -q | xargs -r docker stop
+    再删除容器：docker ps -a -f name=containername -q | xargs -r docker rm
+
+删除虚悬镜像：`docker images -q -f dangling=true | xargs -r docker rmi -f`  
 

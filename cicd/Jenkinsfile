@@ -61,6 +61,7 @@ pipeline {
                     -v /home/docker/tr-project/nginx/html:/usr/share/nginx/html \
                     -v /home/docker/tr-project/nginx/conf:/etc/nginx/conf.d \
                     192.168.0.11:8082/fe/nginx-fe-${_container_name}"'
+    	        sh 'docker images -q -f dangling=true | xargs -r docker rmi -f'
             }
     	}
     }
@@ -104,7 +105,7 @@ pipeline {
                     '- 项目地址：http://192.168.0.11:18853/index/indexPage'
                 ],
                 at: [
-                    '15156015902'
+                    '18656355679'
                 ]
             )
         }
