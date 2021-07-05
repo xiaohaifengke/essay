@@ -747,7 +747,7 @@ Context: http,service,location
 location / {
         root   /usr/share/nginx/html;
         index  index.html index.htm;
-+        sub_filter 'world' 'zhufeng';
++        sub_filter 'world' 'titan';
 +        sub_filter_once off;
     }
 ```
@@ -1204,7 +1204,7 @@ var server =http.createServer( function ( request ,response ){
 server.listen( 3000 ,function(){
 console.log( 'HTTP服务器启动中，端口：3000' );
 });
-upstream zhufeng {
+upstream titan {
   server 127.0.0.1:3000 weight=10;
   server 127.0.0.1:4000;
   server 127.0.0.1:5000;
@@ -1212,7 +1212,7 @@ upstream zhufeng {
 
 server {
     location / {
-        proxy_pass http://zhufeng;
+        proxy_pass http://titan;
     }
 ```
 
@@ -1247,23 +1247,23 @@ upstream zfpx {
 | 正定义hash       | hash自定义key                                                |
 
 ```conf
-upstream zhufeng{
+upstream titan{
   ip_hash;
   server 127.0.0.1:3000;
 }
-upstream zhufeng{
+upstream titan{
   least_conn;
   server 127.0.0.1:3000;
 }
-upstream zhufeng{
+upstream titan{
   url_hash;
   server 127.0.0.1:3000;
 }
-upstream zhufeng{
+upstream titan{
   fair;
   server 127.0.0.1:3000;
 }
-upstream zhufeng{
+upstream titan{
   hash $request_uri;
   server 127.0.0.1:3000;
 }
@@ -1297,7 +1297,7 @@ http{
       set $nocache 1;
     }
     location / {
-       proxy_pass http://zhufeng;
+       proxy_pass http://titan;
     }
     location ~ ^/cache/ {
      proxy_cache cache;
