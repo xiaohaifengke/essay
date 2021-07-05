@@ -28,8 +28,11 @@
   - [在Jenkins中添加多分支流水线任务](cicd/10.%20%E5%9C%A8Jenkins%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%A4%9A%E5%88%86%E6%94%AF%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BB%BB%E5%8A%A1)  
   - [解决gitlab添加webhook提示Url is blocked: Requests to the local network are not allowed的问题](cicd/fix-gitlab-url-blocked)  
   - [Docker常见问题归纳](cicd/docker/docker%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%BD%92%E7%BA%B3)
+- HTTP
+  - [一个a标签引发的黑锅与解决过程](HTTP/一个a标签引发的黑锅与解决过程.md)
+  - [什么是HSTS，为什么要使用它？](HTTP/HSTS.md)
 
-- 开发工具
+- 其它
   - [Git相关实用操作](dev-tools/git/git.md)
 
 
