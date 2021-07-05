@@ -176,7 +176,7 @@ rpm -qa 查看系统中安装了哪些包
 
 > 配置文件路径：/etc/logrotate.d/nginx
 
-```js
+```conf
 # cat /etc/logrotate.d/nginx
 /var/log/nginx/*.log {
         daily				# 日志文件每天进行滚动。其它可用值为monthly，weekly或者yearly。
@@ -196,7 +196,7 @@ rpm -qa 查看系统中安装了哪些包
 ```
 
 
-```js
+```command line
 # ls /var/log/nginx
 access.log  error.log  error.log-20201206
 ```
@@ -305,7 +305,7 @@ systemctl restart nginx.service
 
 ### 7.1 安装目录和路径
 
-```js
+```conf
 --prefix=/etc/nginx #安装目录
 --sbin-path=/usr/sbin/nginx #可执行文件
 --modules-path=/usr/lib64/nginx/modules #安装模块
@@ -320,7 +320,7 @@ systemctl restart nginx.service
 
 - 执行对应模块时nginx所保留的临时性文件
 
-```js
+```conf
 --http-client-body-temp-path=/var/cache/nginx/client_temp #客户端请求体临时路径
 --http-proxy-temp-path=/var/cache/nginx/proxy_temp #代理临时路径
 --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp 
@@ -332,7 +332,7 @@ systemctl restart nginx.service
 
 - 设置nginx进程启动的用户和用户组
 
-```js
+```conf
 --user=nginx   #指定用户
 --group=nginx  #指定用户组
 ```
@@ -342,7 +342,7 @@ systemctl restart nginx.service
 - 设置额外的参数将被添加到`CFLAGS`变量
 - `CFLAGS`变量用来存放C语言编译时的优化参数
 
-```js
+```conf
 --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong 
 ```
 
@@ -351,13 +351,13 @@ systemctl restart nginx.service
 - 定义要传递到C链接器命令行的其他选项
 - PCRE库，需要指定–with-ld-opt="-L /usr/local/lib"
 
-```js
+```conf
 --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie'
 ```
 
 ### 7.6 其它参数
 
-```js
+```conf
 --with-compat 
 --with-file-aio 
 --with-threads 
@@ -395,7 +395,7 @@ systemctl restart nginx.service
 
 ### 8.1 nginx配置语法
 
-```js
+```conf
 # 使用#可以添加注释,使用$符号可以使用变量
 # 配置文件由指令与指令块组成,指令块以{}将多条指令组织在一起
 http {
@@ -442,7 +442,7 @@ http {
 - /etc/nginx/nginx.conf
 - 一个HTTP下面可以配置多个server
 
-```js
+```conf
 user  nginx;   设置nginx服务的系统使用用户  
 worker_processes  1;  工作进程数,一般和CPU数量相同 
 
@@ -479,7 +479,7 @@ http {
 - /etc/nginx/conf.d/default.conf
 - 一个server下面可以配置多个`location`
 
-```js
+```conf
 server {
     listen       80;  //监听的端口号
     server_name  localhost;  //用域名方式访问的地址
@@ -543,7 +543,7 @@ server {
 - 监视和控制systemd的主要命令是systemctl
 - 该命令可用于查看系统状态和管理系统及服务
 
-```js
+```command line
 命令：systemctl  command name.service
 启动：service name start –>systemctl start name.service
 停止：service name stop –>systemctl stop name.service
@@ -553,7 +553,7 @@ server {
 
 ### 8.7 启动和重新加载
 
-```js
+```command line
 systemctl restart nginx.service
 systemctl reload nginx.service
 nginx -s reload
@@ -630,7 +630,7 @@ nginx -s reload
 
 #### 8.9.3 示例
 
-```js
+```conf
  # 定义一种日志格式 
  log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
@@ -654,7 +654,7 @@ tail -f /var/log/nginx/access.log
 
 #### 9.1.2 语法
 
-```js
+```conf
 Syntax: stub_status on/off;
 Default: -
 Context: server->location
@@ -669,6 +669,7 @@ server {
 +    location /status{
 +       stub_status  on;
 +    }
+
 systemctl reload nginx.service
 
 http://192.171.207.104/status
@@ -697,7 +698,7 @@ Reading: 0 Writing: 1 Waiting: 1
 
 #### 9.2.2 语法
 
-```js
+```conf
 Syntax: random_index on/off;
 Default: off
 Context: location
@@ -724,7 +725,7 @@ Context: location
 
 ##### 9.3.2.1 文本替换
 
-```js
+```conf
 Syntax: sub_filter string replacement;
 Default: --
 Context: http,service,location
@@ -732,7 +733,7 @@ Context: http,service,location
 
 ##### 9.3.2.2 只匹配一次
 
-```js
+```conf
 Syntax: sub_filter_once on|off;
 Default: off
 Context: http,service,location
@@ -766,7 +767,7 @@ location / {
   - -n 总共的请求数
   - -c 并发的请求数
 
-```js
+```conf
 ab -n 40 -c 20 http://127.0.0.1/
 ```
 
@@ -776,7 +777,7 @@ ab -n 40 -c 20 http://127.0.0.1/
 
 limit_req_zone
 
-```js
+```conf
 # 可以以IP为key zone为空间的名称 size为申请空间的大小
 Syntax: limit_req_zone key zone=name:size rate=rate;   
 Default: --
@@ -785,7 +786,7 @@ Context: http(定义在server以外)
 
 limit_req
 
-```js
+```conf
 # zone名称 number限制的数量
 Syntax: limit_req  zone=name [burst=number] [nodelay];
 Default: --
@@ -794,7 +795,7 @@ Context: http,server,location
 
 ##### 9.4.3.2 案例
 
-```js
+```conf
 limit_req_zone $binary_remote_addr zone=req_zone:1m rate=1r/s;
 server {
   location /{
@@ -818,7 +819,7 @@ server {
 
 limit_conn_zone
 
-```js
+```conf
 # 可以以IP为key zone为空间的名称 size为申请空间的大小
 Syntax: limit_conn_zone key zone=name:size;   
 Default: --
@@ -827,7 +828,7 @@ Context: http(定义在server以外)
 
 limit_conn
 
-```js
+```conf
 # zone名称 number限制的数量
 Syntax: limit_conn  zone number;
 Default: --
@@ -836,7 +837,7 @@ Context: http,server,location
 
 ##### 9.4.4.2 案例
 
-```js
+```conf
 limit_conn_zone $binanry_remote_addr zone=conn_zone:1m;
 server {
   location /{
@@ -854,7 +855,7 @@ server {
 
 #### 9.5.1 http_access_module
 
-```js
+```conf
 Syntax: allow address|all;
 Default: --
 Context: http,server,location,limit_except
@@ -886,7 +887,7 @@ server {
 
 #### 9.5.2 http_auth_basic_module
 
-```js
+```conf
 Syntax: auth_basic string|off;
 Default: auth_basic off;
 Context: http,server,location,limit_except
@@ -918,7 +919,7 @@ server {
 - CDN的全称是Content Delivery Network，即内容分发网络。
 - CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。
 
-[cdn](http://img.zhufengpeixun.cn/cdn.jpg)
+![cdn](http://img.zhufengpeixun.cn/cdn.jpg)
 
 ### 10.3 配置语法
 
@@ -996,7 +997,7 @@ server {
 
 #### 10.3.8 案例
 
-```js
+```conf
 gzip index.txt
 ```
 
@@ -1046,7 +1047,7 @@ gzip index.txt
 | 默认   | expires off;         |
 | 上下文 | http,server,location |
 
-```js
+```conf
 location ~ .*\.(jpg|png|gif)$ {
     expires 24h;
 }
@@ -1062,13 +1063,14 @@ location ~ .*\.(jpg|png|gif)$ {
 | 默认   | add_header --;        |
 | 上下文 | http,server,location  |
 
-```js
+```conf
 https://github.com/creationix/nvm
 location ~ .*\.json$ {
         add_header Access-Control-Allow-Origin http://localhost:3000;
         add_header Access-Control-Allow-Methods GET,POST,PUT,DELETE,OPTIONS;
         root /data/json;
 }
+
 let xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://47.104.184.134/users.json', true);
         xhr.onreadystatechange = function () {
@@ -1152,7 +1154,7 @@ location / {
 
 ![fanproxy.jpg](./imgs/fanproxy.jpg)
 
-```js
+```conf
 location ~ ^/api {
     proxy_pass http://localhost:3000;
     proxy_redirect default; #重定向
@@ -1194,7 +1196,7 @@ curl http://localhost/api/users.json
 | 默认   | -                |
 | 上下文 | http             |
 
-```js
+```conf
 var http = require( 'http' );
 var server =http.createServer( function ( request ,response ){
           response.end('server3 000');
@@ -1224,7 +1226,7 @@ server {
 | fail_timeout | 经过max_fails失败后，服务暂停的时间,默认10秒                 |
 | max_conns    | 限制每个server最大的接收的连接数,性能高的服务器可以连接数多一些 |
 
-```js
+```conf
 upstream zfpx {
   server localhost:3000 down;
   server localhost:4000 backup;
@@ -1244,7 +1246,7 @@ upstream zfpx {
 | fair(第三方)     | 按后端服务器的响应时间来分配请求，响应时间短的优先分配       |
 | 正定义hash       | hash自定义key                                                |
 
-```js
+```conf
 upstream zhufeng{
   ip_hash;
   server 127.0.0.1:3000;
@@ -1273,9 +1275,9 @@ upstream zhufeng{
 - 代理缓存
 - 客户端缓存
 
-[proxy_cache](https://blog.csdn.net/dengjiexian123/article/details/53386586)
+![proxy_cache](https://blog.csdn.net/dengjiexian123/article/details/53386586)
 
-```js
+```conf
 http{  
     # 缓存路径 目录层级 缓存空间名称和大小 失效时间为7天 最大容量为10g
     proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=cache:100m inactive=60m max_size=10g;  
@@ -1290,7 +1292,7 @@ http{
 | inactive         | 在指定时间内没人访问则被删除                               |
 | max_size         | 最大缓存空间，如果缓存空间满，默认覆盖掉缓存时间最长的资源 |
 
-```js
+```conf
     if ($request_uri ~ ^/cache/(login|logout)) {
       set $nocache 1;
     }
@@ -1343,7 +1345,7 @@ http{
 
 实例
 
-```js
+```conf
 rewrite ^(.*)$ /www/reparing.html break;
 ```
 
@@ -1364,7 +1366,7 @@ rewrite ^(.*)$ /www/reparing.html break;
 | \     | 转义字符                                   |
 | ()    | 用于匹配括号之间的内容，可以通过$1、$2引用 |
 
-```js
+```conf
 rewrite index\.php$ /pages/repare.html break;
 if($http_user_agent ~ MSIE){
   rewrite ^(.*)$ /msie/$1 break;
@@ -1373,7 +1375,7 @@ if($http_user_agent ~ MSIE){
 
 pcretest
 
-```js
+```conf
 wget https://ftp.pcre.org/pub/pcre/pcre-8.13.tar.gz
 tar -xzvf  pcre-8.13.tar.gz
 cd pcre-8.13
@@ -1394,7 +1396,7 @@ pcretest
 | redirect  | 返回302昨时重定向,以后还会请求这个服务器                     |
 | permanent | 返回301永久重定向,以后会直接请求永久重定向后的域名           |
 
-```js
+```conf
  location ~ ^/break {
      rewrite ^/break /test break;
      proxy_pass http://127.0.0.1:3000;
