@@ -78,6 +78,6 @@
   [debounce](https://github.com/lodash/lodash/blob/4.8.0-npm/debounce.js)
   [throttle](https://github.com/lodash/lodash/blob/4.8.0-npm/throttle.js)
   
-  最后，我实现了一个[Demo](examples/src/debounce-throttle-demo/debounce-throttle.html),可以形象展示当高频率触发事件时，浏览器默认事件、debounce、debounce with leading、throttle四种情况的触发频率及触发时间。
+  最后，我实现了一个[Demo](https://xiaohaifengke.github.io/essay/examples/dist/debounce-throttle-demo.html),可以形象展示当高频率触发事件时，浏览器默认事件、debounce、debounce with leading、throttle四种情况的触发频率及触发时间。
   该demo中的debounce和throttle两种情况是使用了上述自己实现的极简版的封装，debounce with leading项是使用了lodash提供的方法。
   
