@@ -5,6 +5,7 @@
   - [Javascript中this指向总结](Javascript/js-this.md)
   - [介绍一个超级mini的编译器的实现原理](Javascript/compiler.md)
   - [SVG 和 Canvas的特性与选择](Javascript/svg&canvas.md)
+  - [WebSocket](Javascript/WebSocket.md)
 
 - Vue
   - [记一次Vue项目优化要点](Vue/project-optimization.md)
