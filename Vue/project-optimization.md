@@ -18,7 +18,7 @@
 
    1. 代码压缩
    2. **按需引用** 第三方库 [babel-plugin-import](https://github.com/ant-design/babel-plugin-import)。
-   3. 配置webpack [externals](https://webpack.docschina.org/configuration/externals/#externals)
+   3. 配置webpack [externals](https://webpack.docschina.org/configuration/externals/#externals)。
    4. 使用 splitChunks 抽离公共模块。
    5. 使用url-loader把小图片转换为base64编码，减少网络请求。（同时也会增大模块体积，且不利于图片缓存）。
    6. 使用[runtimeChunk](https://webpack.js.org/configuration/optimization/#optimizationruntimechunk)分离webpack的runtime。
