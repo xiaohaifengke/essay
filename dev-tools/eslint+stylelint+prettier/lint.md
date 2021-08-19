@@ -242,6 +242,7 @@ npm install lint-staged -D
 ```
 添加一个hook `pre-commit` :
 ```command line
+npx husky install
 npx husky add .husky/pre-commit "npx --no-install lint-staged"
 ```
 在 `package.json` 中添加 `lint-staged`字段：
@@ -258,7 +259,8 @@ npx husky add .husky/pre-commit "npx --no-install lint-staged"
           "eslint --ext .vue,.js"
         ],
         "src/**/*.((s(c|a)|c)ss)": [
-          "stylelint --fix"
+          "stylelint --fix",
+          "prettier --write"
         ]
     }
 }
@@ -267,18 +269,23 @@ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 ### 整合 commit-msg
 安装 `commitlint`：
 ```command line
-npm install commitlint @commitlint/cli @commitlint/config-conventional @commitlint/prompt-cli commitizen cz-conventional-changelog -D
+npm install commitlint @commitlint/cli @commitlint/config-conventional @commitlint/prompt-cli commitizen cz-conventional-changelog conventional-changelog conventional-changelog-cli -D
 ```
 添加一个hook `commit-msg` :
 ```command line
 npx husky add .husky/commit-msg "npx --no-install commitlint --edit "$1""
 ```
+在项目根目录下添加文件 `commitlint.config.js`:
+```javascript
+module.exports = { extends: ["@commitlint/config-conventional"] };
+```
+
 在 `package.json` 中添加 `config`字段：
 ```json
 {
     "scripts": {
         "cz": "git-cz",
-        "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+        "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
     },
     "config": {
         "commitizen": {
