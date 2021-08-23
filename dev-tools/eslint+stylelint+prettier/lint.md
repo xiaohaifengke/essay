@@ -175,7 +175,7 @@ module.exports = {
 };
 
 // 如果是使用webpack-chain的方式：
-config.plugin("stylelint").use(StyleLintPlugin, [{
+config.plugin("stylelint").use(StylelintPlugin, [{
     files: ['src/**/*.vue', 'src/styles/**/*.((s(c|a)|c)ss)'],
     fix: true
   }])
