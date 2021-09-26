@@ -248,21 +248,21 @@ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 在 `package.json` 中添加 `lint-staged`字段：
 ```json
 {
-    "lint-staged": {
-        "src/**/*.vue": [
-          "stylelint --fix",
-          "prettier --write",
-          "eslint --ext .vue,.js"
-        ],
-        "src/**/*.js": [
-          "prettier --write",
-          "eslint --ext .vue,.js"
-        ],
-        "src/**/*.((s(c|a)|c)ss)": [
-          "stylelint --fix",
-          "prettier --write"
-        ]
-    }
+  "lint-staged": {
+    "src/**/*.vue": [
+      "stylelint --fix",
+      "prettier --write",
+      "eslint"
+    ],
+    "src/**/*.{js,ts}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "src/**/*.((s(c|a)|c)ss)": [
+      "stylelint --fix",
+      "prettier --write"
+    ]
+  }
 }
 ```
 
