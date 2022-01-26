@@ -53,6 +53,7 @@ eslint的规则可以通过rules配置，但是，不同场景、不同规范下
 #### extends
 先简要介绍几个依赖包：
 - `eslint-plugin-prettier`
+    
     - 作用：一个形式上跟standard类似的一个代码规则，用来在基础规则上扩展的规则，eslint的rules规则优先级大于prettier的规则。
       
     - 提示：eslint-plugin-prettier不会为您安装Prettier或ESLint，你必须自己安装。
@@ -117,6 +118,7 @@ module.exports = {
 ```
 如果与已存在的插件冲突时，可以安装 `eslint-config-prettier` 将 `Prettier` 的配置指定到单独的配置文件中（如 `.prettierrc.js`）。
 `.prettierrc.js`的配置项说明：
+
 ```javascript
 module.exports = {
     // 一行最多 80 字符
@@ -273,7 +275,7 @@ npm install commitlint @commitlint/cli @commitlint/config-conventional @commitli
 ```
 添加一个hook `commit-msg` :
 ```command line
-npx husky add .husky/commit-msg "npx --no-install commitlint --edit "$1""
+npx husky add .husky/commit-msg 'npx --no-install commitlint --edit \"$1\"'
 ```
 在项目根目录下添加文件 `commitlint.config.js`:
 ```javascript
