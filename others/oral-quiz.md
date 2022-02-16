@@ -44,9 +44,21 @@
 
 如果服务器收到的请求没有 Etag 值，则将 If-Modified-Since 和被请求文件的最后修改时间做比对，一致则命中协商缓存，返回 304；不一致则返回新的 last-modified 和文件并返回 200
 
+## 2. 金额格式化
+
+```js
+// 1
+function toThousandFilter(num) {
+  return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+}
+// 2
+var s = '12345237987584564656,000.00';
+var d=s.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+```
 
 
-## 2. 介绍下Promise
+
+## 3. 介绍下Promise
 
 Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大。
 
