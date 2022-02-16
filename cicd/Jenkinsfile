@@ -1,0 +1,150 @@
+import groovy.json.*
+
+pipeline {
+    agent  any
+	options {
+	    timeout(time: 30, unit: 'MINUTES')
+	    retry(1)
+        timestamps()
+    }
+    environment {
+        /* _version = createVersion() */
+        _container_name = 'tr-center-web-frontend'
+        _branch_name = getGitBranchName()
+        _build_user = getChanges()
+    }
+    stages {
+    	stage("environment") {
+    	    steps {
+    	        nodejs("node12.18.2") {
+                    sh 'node -v'
+                    sh 'npm -v'
+                    sh 'npm config ls'
+                    sh 'npm install'
+    	        }
+            }
+    	}
+    	stage("build project") {
+    	    steps {
+    	        nodejs("node12.18.2") {
+                    sh 'npm run build'
+    	        }
+            }
+    	}
+    	stage("file transfer") {
+    	    steps {
+    	        sh 'rm -rf ./${_container_name}-temp'
+    	        sh 'mkdir ./${_container_name}-temp'
+    	        sh 'cp -r ./dist ./${_container_name}-temp'
+    	        sh 'cp Dockerfile ./${_container_name}-temp'
+    	        sh 'tar -czvf ${_container_name}.tar ./${_container_name}-temp'
+    	        sh 'scp ./${_container_name}.tar root@192.168.0.11:~'
+            }
+    	}
+    	stage("build docker image") {
+    	    steps {
+    	        sh 'ssh root@192.168.0.11 "tar zxvf ~/${_container_name}.tar"'
+    	        sh 'ssh root@192.168.0.11 "docker build -t 192.168.0.11:8082/fe/nginx-fe-${_container_name} ./${_container_name}-temp"'
+            }
+    	}
+    	stage("run docker container") {
+    	    steps {
+                /* sh 'docker save -o ${_container_name}.tar 192.168.0.12:8082/fe/nginx-fe-${_container_name}'
+                sh 'scp -o StrictHostKeyChecking=no ${_container_name}.tar root@192.168.0.11:~'
+                sh 'ssh root@192.168.0.11 "docker load < ${_container_name}.tar"' */
+
+    	        sh 'ssh root@192.168.0.11 "docker ps -f name=${_container_name} -q | xargs -r docker stop"'
+    	        sh 'ssh root@192.168.0.11 "docker ps -a -f name=${_container_name} -q | xargs -r docker rm"'
+    	        sh 'ssh root@192.168.0.11 "docker run -itd -p 18853:80 \
+    	            --name ${_container_name} \
+                    --restart always \
+                    -v /home/docker/tr-project/nginx/html:/usr/share/nginx/html \
+                    -v /home/docker/tr-project/nginx/conf:/etc/nginx/conf.d \
+                    192.168.0.11:8082/fe/nginx-fe-${_container_name}"'
+            }
+    	}
+    }
+    post {
+        success {
+            dingtalk (
+                robot: 'mac',
+                type: 'MARKDOWN',
+                title: '😊 Successful $JOB_NAME ',
+                text: [
+                    '# <font color="#0089FF">$JOB_NAME - Build & Deploy  Successful ! 😊</font>',
+                    '---',
+                    '- 项目名称：<font color="#0089FF">铜仁地理信息数据中台-前端</font>',
+                    '- 任务类型：<font color="#0089FF">构建部署</font>',
+                    '- 任务状态：<font color="#52C41A">成功</font>',
+                    '- 部署环境：<font color="#0089FF">开发环境</font>',
+                    '- 代码分支：${GIT_BRANCH}',
+                    '- 构建编号：${BUILD_NUMBER}',
+                    '- 构建人员：${_build_user}',
+                    '- 构建日志：${BUILD_URL}console',
+                    '- 项目地址：http://192.168.0.11:18853/index/indexPage'
+                ]
+            )
+        }
+        failure {
+            dingtalk (
+                robot: 'mac',
+                type: 'MARKDOWN',
+                title: '😔 Failure $JOB_NAME ',
+                text: [
+                    '# <font color="#ff0000">$JOB_NAME - Build & Deploy  Failure ! 😔</font>',
+                    '---',
+                    '- 项目名称：<font color="#0089FF">铜仁地理信息数据中台-前端</font>',
+                    '- 任务类型：<font color="#0089FF">构建部署</font>',
+                    '- 任务状态：<font color="#ff0000">失败</font>',
+                    '- 部署环境：<font color="#0089FF">开发环境</font>',
+                    '- 代码分支：${GIT_BRANCH}',
+                    '- 构建编号：${BUILD_NUMBER}',
+                    '- 构建人员：${_build_user}',
+                    '- 构建日志：${BUILD_URL}console',
+                    '- 项目地址：http://192.168.0.11:18853/index/indexPage'
+                ],
+                at: [
+                    '15156015902'
+                ]
+            )
+        }
+    }
+
+}
+
+def createVersion() {
+    // 定义一个版本号作为当次构建的版本，输出结果 20191210175842_69
+    return new Date().format('yyyyMMddHHmmss') + "_${env.BUILD_ID}"
+}
+
+def getGitBranchName() {
+    return scm.branches[0].name
+}
+
+@NonCPS
+def getBuildUser() {
+    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+}
+
+class MyChange {
+   String author;
+   String msg;
+}
+
+@NonCPS
+def getChanges()
+{
+    def changeLogSets = currentBuild.changeSets
+    for (int i = 0; i < changeLogSets.size(); i++)
+    {
+        def entries = changeLogSets[0].items
+        for (int j = 0; j < entries.length; j++)
+        {
+            def entry = entries[0]
+            def change = new MyChange()
+            change.author = entry.author
+            return change.author
+        }
+    }
+
+}

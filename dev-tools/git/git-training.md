@@ -1,45 +1,5 @@
 # Git Summary
 
-> git的特性及与svn的区别
->
-> git中工作区
->
-> 常用命令
->
-> 分支及merge
->
-> 其它：1: 常用的git工具
-
-1. 常用的git命令
-
-2. git branch
-
-3. git workflow
-
-4. .gitignore
-
-5. git三板斧
-
-6. git fetch
-
-7. `git stash` 是程序员的至宝
-
-   > 老板 biangbiang 甩来一个 case，说这个要下班之前 hot fix，咋办，stash，切到 release 对应的分支，缝缝补补；产品 kuangkuang 砸来一个需求更新，说这个简单，小哥哥帮帮我先做了，咋办，stash 切一个新的 feature 分支，撸袖子干。如果没有 `git stash`，人生至少要灰暗一半。
-
-8. 查看当前状态 *git* status
-
-9. 不在跟踪已经提交过的文件，用什么命令？
-
-10. 只要commit过的内容，就都可以找回
-
-11. rebase
-
-12. 只合并某个分支的个别文件
-
-13. 只合并某次提交内容
-
-
-
 >  因为时间有限，所以这次分享主要以能快速上手git，能应对常见场景的使用需求为目的。对于有基础的小伙伴来说可能不够深入，如果有想讨论的，可以随时提出来。
 >
 >  在坐的这么多同事，我相信肯定有一些人的git用的很好的，所以如果发现我讲错了，要及时纠正，千万不能因为我的理解偏差把大伙带偏了。如果有某方面没涉及到或者没讲清楚的，及时提出来，可以深入沟通。
@@ -634,6 +594,8 @@ git checkout <当前你正在使用的分支>
 git checkout <commit_id>
 # 切换指定 tag 
 git checkout <tag>
+# 只合并某个分支的个别文件(说合并其实不如拷贝合适，该操作会将另一个分支的文件内容覆盖当前文件)
+git checkout branchname xxx.js
 ```
 
 - **在开发的正常阶段，`HEAD` 一般指向 master 或是其他的本地分支，但当你使用 `git checkout <commit id>` 切换到指定的某一次提交的时候，`HEAD` 就不再指向一个分支了——它直接指向一个提交，HEAD 就会处于 detached 状态（游离状态）**。
@@ -771,30 +733,22 @@ git clone --recurse-submodules [URL]
 
 ## 7. 工作中常见问题的解决方式
 
-### 1）拉取别人的远程分支合并后，git 会存取这个拉取的记录，如果你不小心删了别人的上传的文件，这时候想要再拉取别人的分支是没用的，会显示 already-up
+1. 拉取别人的远程分支合并后，git 会存取这个拉取的记录，如果你不小心删了别人的上传的文件，这时候想要再拉取别人的分支是没用的，会显示 already-up
 
-这时候可以回滚代码，重新拉取。
+        > 这时候可以回滚代码，重新拉取。
 
+2. 以前有过这样的经历：前后端、客户端的代码都存放在一个 git 仓库中，在根目录下各自新建项目目录。那么可以直接在自己的项目目录下使用 git 提交代码并且在各自的项目目录下配置 .gitignore 文件，不用在根目录下配置 .gitignore 文件，这样就互不影响了
 
+3. fatal：refusing to merge unrelated histories 拒绝合并不相关的历史
 
-### 2、以前有过这样的经历：前后端、客户端的代码都存放在一个 git 仓库中，在根目录下各自新建项目目录。那么可以直接在自己的项目目录下使用 git 提交代码并且在各自的项目目录下配置 .gitignore 文件，不用在根目录下配置 .gitignore 文件，这样就互不影响了
-
-
-
-### 3、fatal：refusing to merge unrelated histories 拒绝合并不相关的历史
-
-在 git 2.9.2 之后，不可以合并没有相同结点的分支（分支之间自仓库建立后，从来没有过互相拉取合并）。如果需要合并两个不同结点的分支，如下：
-
-```git
-$ git pull origin branchName --allow-unrelated-histories
-$ git merge branchName --allow-unrelated-histories
-```
-
-这个功能是可以让大家不要把仓库上传错了，如果会加上这个代码，那么就是自己确定了上传。旧版本的 Git 很容易就把代码传错了，现在可以看到，如果上传的不是之前的，那么就需要加代码上传。 正常情况下，都是先建立仓库，然后切多个分支，分支先去拉取合并主分支的内容，然后再各自开发， 如果建立仓库后，各个分支没有区拉取主分支的代码，之后各个分支之间想要合并时就会报错。
-
-
-
-### 4、合并分支时出现问题，想要解除合并状态
+    > 在 git 2.9.2 之后，不可以合并没有相同结点的分支（分支之间自仓库建立后，从来没有过互相拉取合并）。如果需要合并两个不同结点的分支，如下：
+    >
+    > ```git
+    > $ git pull origin branchName --allow-unrelated-histories
+    > $ git merge branchName --allow-unrelated-histories
+    > ```
+    > 这个功能是可以让大家不要把仓库上传错了，如果会加上这个代码，那么就是自己确定了上传。旧版本的 Git 很容易就把代码传错了，现在可以看到，如果上传的不是之前的，那么就需要加代码上传。 正常情况下，都是先建立仓库，然后切多个分支，分支先去拉取合并主分支的内容，然后再各自开发， 如果建立仓库后，各个分支没有区拉取主分支的代码，之后各个分支之间想要合并时就会报错。
+4. 合并分支时出现问题，想要解除合并状态
 
 ```git
 error: merge is not possible because you have unmerged files.
@@ -1118,7 +1072,17 @@ $ git rm -rf . // 注意：最后的‘.’不能少。
 
 先删除该分支，然后再新建一个空的分支（分支名就是删除的分支名）~~
 
+### 35、如果要删除所有提交历史记录，但将代码保持在当前状态，可以按照以下方式安全地执行此操作：
+> 删除.git文件夹可能会导致git存储库中的问题。
+
+  1. 尝试 运行 git checkout --orphan latest_branch
+  2. 添加所有文件git add -A
+  3. 提交更改git commit -am "commit message"
+  4. 删除分支git branch -D master
+  5. 将当前分支重命名git branch -m master
+  6. 最后，强制更新存储库。git push -f origin master
 
 
-## 8. 使用GitLab
+
+[^_^]:## 8. 使用GitLab
 
