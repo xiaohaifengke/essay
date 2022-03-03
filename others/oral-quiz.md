@@ -329,3 +329,149 @@ JavaScript语言的一大特点就是单线程。单线程就意味着，所有�
 
 #### 5.2 简述 Macrotasks 和 Microtasks 的执行方式
 js加载script标签，即建立了第一个Macrotask，该执行过程可能会产生其它的 Macrotask 和 Microtask 并分别放入Macrotasks 和 Microtasks。 在当前Macrotask执行完后，会执行 Microtasks 中的所有的Microtask，执行过程中产生的Macrotask 和 Microtask 同样会追加到 Macrotasks 和 Microtasks， 该过程会把所有的（包括执行过程中追加的）Microtask执行完之后再从Macrotasks中取下一个Macrotask，执行完后再执行所有的Microtask，如此反复。
+
+## 6. type和interface的区别
+
+TypeScript 有 `boolean`、`number`、`string` 等基本类型。如果我们想声明高级类型，我们就需要使用**类型别名**。
+
+类型别名指的是为类型创建新名称。**需要注意的是**，我们并没有定义一个新类型，而只是给类型定义了一个别名而已。
+
+### 6.1 区别：
+
+1. 类型别名声明可用于任何基元类型、联合或交集。**在这方面，接口被限制为对象类型**。接口只能用于声明对象的形状，不能重命名原语。
+
+2. 并集和交集类型
+
+   虽然接口可以被扩展和合并，但它们不能以联合和交集的形式组合在一起。类型可以使用联合和交集操作符来形成新的类型。
+
+   ```
+   // object
+   type PartialPointX = { x: number; };
+   type PartialPointY = { y: number; };
+    
+   // 并集
+   type PartialPoint = PartialPointX | PartialPointY;
+    
+   // 交集
+   type PartialPoint = PartialPointX & PartialPointY;
+   ```
+
+3. 声明合并
+
+   TypeScript 编译器合并两个或多个具有相同名称的接口。
+
+   
+
+   这不适用于类型。
+
+   
+
+   如果我们尝试创建具有相同名称但不同的属性的两种类型，则 TypeScript 编译器将抛出错误。
+
+   ```
+   // These two declarations become:
+   // interface Point { x: number; y: number; }
+   interface Point { x: number; }
+   interface Point { y: number; }
+    
+   const point: Point = { x: 1, y: 2 };
+   ```
+
+4. 元组类型
+
+   元组(键值对)只能通过 type 关键字进行定义。
+
+   ```
+   type Point = [x: number, y: number];
+   ```
+
+   没有办法使用接口声明元组。不过，我们可以在接口内部使用元组
+
+   ```
+   interface Point {
+     coordinates: [number, number]
+   }
+   ```
+
+### 6.2 相似之处：
+
+1. 两者都可以被**继承**
+
+   interface 和 type 都可以继承。另一个值得注意的是，接口和类型别名并不互斥。类型别名可以继承接口，反之亦然。
+
+   对于一个接口，继承另一个接口
+
+   ```
+   interface PartialPointX { x: number; }
+   interface Point extends PartialPointX { y: number; }
+   ```
+
+   或者，继承一个类型
+
+   ```
+   type PartialPointX = { x: number; };
+   interface Point extends PartialPointX { y: number; }
+   ```
+
+   类型继承另一个类型：
+
+   ```
+   type PartialPointX = { x: number; };
+   type Point = PartialPointX & { y: number; };
+   ```
+
+   或者，继承一个接口：
+
+   ```
+   interface PartialPointX { x: number; }
+   type Point = PartialPointX & { y: number; };
+   ```
+
+2. 两者都可以被**实现**
+
+    类可以实现接口以及类型（TS 2.7+）。但是，类不能实现联合类型。
+
+    ```
+    interface Point {
+     x: number;
+     y: number;
+    }
+
+    class SomePoint implements Point {
+     x = 1;
+     y = 2;
+    }
+
+    type AnotherPoint = {
+     x: number;
+     y: number;
+    };
+
+    class SomePoint2 implements AnotherPoint {
+     x = 1;
+     y = 2;
+    }
+
+    type PartialPoint = { x: number; } | { y: number; };
+
+    // Following will throw an error
+    class SomePartialPoint implements PartialPoint {
+     x = 1;
+     y = 2;
+    }
+    ```
+
+### 6.3 我们应该使用哪一个？
+
+一般来说，接口和类型都非常相似。在大多数情况下，您可以根据个人喜好进行选择，TypeScript 会告诉您是否需要其他类型的声明。如果您想要启发式方法，请使用`interface`直到您需要使用`type`。
+
+对于库或第三方类型定义中的公共 API 定义，应使用接口来提供声明合并功能。除此之外，我们喜欢用哪个就用哪个，但是在整个代码库中应该要保持一致性。
+
+## 7. 装饰器 decorator
+
+关于装饰器的文章：
+
+ts官网：[装饰器](https://www.typescriptlang.org/docs/handbook/decorators.html)
+
+进一步阅读：
+[TypeScript 装饰器完整指南](https://saul-mirone.github.io/a-complete-guide-to-typescript-decorator/)
