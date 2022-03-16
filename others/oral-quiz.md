@@ -76,7 +76,7 @@ Promise 是异步编程的一种解决方案，比传统的解决方案——回
 
 首先，then中要传一个回调函数，还是要通过回调函数的方式写代码，可读性还不是足够好。  
 其次，无法取消`Promise`，一旦新建它就会立即执行，无法中途取消。  
-第三，如果不设置回调函数，`Promise`内部抛出的错误，不会反应到外部，需要全局监听unhandleRejection事件才能监听到。  
+第三，如果不设置回调函数，`Promise`内部抛出的错误，不会反应到外部，需要全局监听unhandledRejection事件才能监听到。  
 第四，可能吞掉错误或异常，错误只能顺序处理，即便在Promise链最后添加catch方法，依然可能存在无法捕捉的错误（catch内部可能会出现错误）
 第五，当处于`pending`状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。
 
@@ -360,23 +360,17 @@ TypeScript 有 `boolean`、`number`、`string` 等基本类型。如果我们想
 
    TypeScript 编译器合并两个或多个具有相同名称的接口。
 
-   
-
-   这不适用于类型。
-
-   
-
-   如果我们尝试创建具有相同名称但不同的属性的两种类型，则 TypeScript 编译器将抛出错误。
+   这不适用于类型。如果我们尝试创建具有相同名称但不同的属性的两种类型，则 TypeScript 编译器将抛出错误。
 
    ```
-   // These two declarations become:
+// These two declarations become:
    // interface Point { x: number; y: number; }
-   interface Point { x: number; }
+interface Point { x: number; }
    interface Point { y: number; }
-    
+ 
    const point: Point = { x: 1, y: 2 };
    ```
-
+   
 4. 元组类型
 
    元组(键值对)只能通过 type 关键字进行定义。
@@ -475,3 +469,50 @@ ts官网：[装饰器](https://www.typescriptlang.org/docs/handbook/decorators.h
 
 进一步阅读：
 [TypeScript 装饰器完整指南](https://saul-mirone.github.io/a-complete-guide-to-typescript-decorator/)
+
+## 8. mouseover和mouseenter事件的区别
+
+- 主要是mouseover事件会冒泡，mouseenter事件不会冒泡的区别
+- 当有父子两个盒子且父元素上监听了mouseover或mouseenter事件时，当鼠标在不离开父元素的前提下：
+  - mouseover事件：在鼠标在进入和离开子元素时**会**重复触发父元素的mouseover事件。
+  - mouseenter事件：在鼠标在进入和离开子元素时**不会**重复触发父元素的mouseover事件。
+
+## 9. line-height: 1.5和150%，以及1.5em的区别
+
+区别体现在子元素继承时，如下：
+
+- 父元素设置line-height:1.5会直接继承给子元素，子元素根据自己的font-size再去计算子元素自己的line-height。
+- 父元素设置line-height:150%或者1.5em是计算好了line-height值，然后把这个计算值给子元素继承，子元素继承拿到的就是最终的值了。此时子元素设置font-size就对其line-height无影响了。
+
+> 还可以如下理解：
+>
+> **有单位（包括百分比）与无单位之间的区别**
+>
+> 有单位时，子元素继承了父元素计算得出的行距；无单位时继承了系数，子元素会分别计算各自行距（推荐使用）。
+
+## 10.  页面中的 script标签 及添加 async/defer 属性的特性
+
+在 HTML 中会遇到以下三类 script：
+
+- `<script src='xxx'></script>`
+- `<script src='xxx' async></script>`
+- `<script src='xxx' defer></script>`
+
+那么这三类 script 有什么区别呢？并且与DOMContentLoaded事件触发前后的关系？
+
+> 添加了defer属性的script标签执行完才会触发DOMContentLoaded事件，也就是说虽然defer不阻塞html的解析，但是会阻塞DOMContentLoaded事件的触发；
+>
+> async属性的script不会阻塞DOMContentLoaded事件的触发，但是可能会阻塞解析html；（当async在html解析完成前加载完成的话，因为会立即执行script内容，所以可能会阻塞）。
+>
+> 对于`外联defer javascript`这里重点说明下为什么也归于`阻塞型`。前面也说了，这里以`document`对象派发`DOMContentLoaded`事件来标识`dom树`构建完成，而`defer javascript`是在该事件派发之前请求并执行的，因此也归类于阻塞型，但是需要知道，`defer`的`javascript`实际上是在`dom树`构建完成与派发`DOMContentLoaded`事件之间请求并执行的，不过如果换个思路理解，`<script>`本身也是`dom`的一部分也就不难理解为什么`defer`的`javascript`会在`DOMContentLoaded`派发之前执行了。
+>
+> **defer 与 DOMContentLoaded**
+>
+> 如果 script 标签中包含 defer，那么这一块脚本将不会影响 HTML 文档的解析，而是等到 HTML 解析完成后才会执行。而 DOMContentLoaded 只有在 defer 脚本执行结束后才会被触发。 所以这意味着什么呢？HTML 文档解析不受影响，等 DOM 构建完成之后 defer 脚本执行，但脚本执行之前需要等待 CSSOM 构建完成。在 DOM、CSSOM 构建完毕，defer 脚本执行完成之后，DOMContentLoaded 事件触发。
+>
+> **async 与 DOMContentLoaded**
+>
+> 如果 script 标签中包含 async，则 HTML 文档构建不受影响，解析完毕后，DOMContentLoaded 触发，而不需要等待 async 脚本执行、样式表加载等等。
+>
+> https://zhuanlan.zhihu.com/p/25876048
+
