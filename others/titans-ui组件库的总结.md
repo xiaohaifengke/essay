@@ -405,7 +405,7 @@ export const eachComponent = series(
 
 ## 6. 文档用的是vitepress
 
-### 7. 不足
+## 7. 不足
 
 - 文档无版本控制
 - 无规范的changelog
