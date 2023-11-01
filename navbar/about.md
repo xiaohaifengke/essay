@@ -3,7 +3,7 @@
 
 我主要的编程语言是：Javascript, Java; 也用Python写过实际业务的爬虫脚本。
 工作中大部分时间还是从事的前端开发工作，主要使用的技术栈是 **Vue, Vue Router, Vuex, axios, Element-UI, Webpack, Babel**。
-也使用过React, antd, Angular, ionic, ts等。
+也曾使用过React, antd, Angular, ionic, ts等。
 有跨平台的开发经验( Hybrid APP 和 Electron )，使用的是 Cordova + Vue 和 Electron + vue；
 
 开发中使用的版本控制工具是Git和SVN。
@@ -11,7 +11,7 @@
 
 我选择的IDE是InteliJ，因为其可以很好的支持Javascript和Java，我认为它是名副其实的全栈开发利器。
 
-尽管技术和修修补补是我的爱好，并且在这一领域的工作给我带来了快乐和自豪，但我也喜欢音乐、跑步、旅游、垂钓等其它事情。
+尽管技术原理和捯饬捯饬是我的爱好，并且在这一领域的工作给我带来了快乐和自豪，但我也喜欢健身、跑步、旅游、音乐、垂钓等其它事情。
 
 ### 联系方式
 

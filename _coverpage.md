@@ -1,4 +1,4 @@
-![logo](.temp/Jh.png ':size=215')
+![logo](./_logo.png ':size=215')
 
 # 个人随笔
 
