@@ -57,7 +57,8 @@
     autoHeader: true,
     auto2top: true,
     alias: {
-      '/.*/_sidebar.md': '/_sidebar.md',
+      '/(?!others)/_sidebar.md': '/_sidebar.md',
+      '/others/_sidebar.md': '/others/index.md',
       '/.*/_navbar.md': '/_navbar.md'
     },
     subMaxLevel: 2,

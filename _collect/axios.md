@@ -2,8 +2,6 @@
 
 zhengxs2018 [高级前端进阶](javascript:void(0);) *2022-01-26 09:11*
 
-![img](http://mmbiz.qpic.cn/sz_mmbiz_png/H8M5QJDxMHpg1ClH18gOQIicISIoSybyDNK203zFMpSM7jHdovb4elgdqNoy6Bylk7XicC6Rpj5QrCv3FkOpR6tw/0?wx_fmt=png)
-
 **高级前端进阶**
 
 网易 & 蚂蚁前端，专注前端进阶领域，已帮助无数前端跳槽涨薪。每日一题「Daily-Interview-Question」 Github 收获近 25000 颗小星星，各公司面试官都在使用。接下来带你走进高级前端的世界，在进阶的路上，共勉！
