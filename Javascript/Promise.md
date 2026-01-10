@@ -16,7 +16,8 @@ Promise是异步编程的一种解决方案，比传统的解决方案(回调函
 3. 当处于pending状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）
 
 ## 四、Event-Loop相关
-Promise上的then方法属于微任务，是js事件循环机制中重要的一环。
+Promise上的then方法会产生一个微任务，是js事件循环机制中重要的一环。
+> JS中分为两种任务类型，同步任务和异步任务；异步任务又分为宏任务和微任务（macrotask和microtask）。其中macrotask包含：主代码块，setTimeout，setInterval，setImmediate，IO，UI Render等（setImmediate规定：在下一次Event Loop（宏任务）时触发）；microtask包含：Promise，Mutation Observer, process.nextTick等（在node环境下，process.nextTick的优先级高于Promise）Event Loop中执行一个macrotask任务（栈中没有就从事件队列中获取）执行过程中如果遇到microtask任务，就将它添加到微任务的任务队列中，macrotask任务执行完毕后，立即执行当前微任务队列中的所有microtask任务（依次执行），然后开始下一个macrotask任务（从事件队列中获取） 浏览器运行机制可参考这篇文章
 
 ## 五、手写Promise
 
