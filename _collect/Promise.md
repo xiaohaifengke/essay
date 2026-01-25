@@ -30,9 +30,7 @@ Promise/A+规范主要分为术语、要求和注意事项三个部分，我们�
 > 3、不同的`promise`实现可以的交互。
 >
 > > - 规范中称这一步操作为`promise`解决过程，函数标示为[[Resolve]](promise, x)，`promise`为要返回的新`promise`对象，`x`为`onResolved/onRejected`的返回值。如果`x`有`then`方法且看上去像一个`promise`，我们就把x当成一个`promis`e的对象，即`thenable`对象，这种情况下尝试让`promise`接收`x`的状态。如果`x`不是`thenable`对象，就用`x`的值来执行 `promise`。
-> >
 > > - [[Resolve]](promise, x)函数具体运行规则：
-> >
 > > - - 如果 `promise` 和 `x` 指向同一对象，以 `TypeError` 为据因拒绝执行 `promise`;
 > >   - 如果 `x` 为 `Promise` ，则使 `promise` 接受 `x` 的状态;
 > >   - 如果 `x` 为对象或者函数，取`x.then`的值，如果取值时出现错误，则让`promise`进入`rejected`状态，如果`then`不是函数，说明`x`不是`thenable`对象，直接以`x`的值`resolve`，如果`then`存在并且为函数，则把`x`作为`then`函数的作用域`this`调用，`then`方法接收两个参数，`resolvePromise`和`rejectPromise`，如果`resolvePromise`被执行，则以`resolvePromise`的参数`value`作为`x`继续调用[[Resolve]](promise, value)，直到`x`不是对象或者函数，如果`rejectPromise`被执行则让`promise`进入`rejected`状态；
@@ -86,9 +84,9 @@ class Promise {
     // 设置then的默认参数，默认参数实现Promise的值的穿透
     onResolved = typeof onResolved === 'function' ? onResolved : function(v) { return e };
     onRejected = typeof onRejected === 'function' ? onRejected : function(e) { throw e };
-    
+
     let promise2;
-    
+
     promise2 =  new Promise((resolve, reject) => {
       // 如果状态为resolved，则执行onResolved
       if (this.status === 'resolved') {
@@ -111,7 +109,7 @@ class Promise {
         }
       }
     });
-    
+
     return promise2;
   }
 ```
@@ -237,9 +235,9 @@ class Promise {
 
   // [[Resolve]](promise2, x)函数
   resolvePromise(promise2, x, resolve, reject) {
-    
+
   }
-  
+
 }
 ```
 
@@ -255,7 +253,7 @@ class Promise {
     if (promise2 === x) {
       return reject(new TypeError('Chaining cycle detected for promise!'))
     }
-    
+
     // 如果x仍然为Promise的情况
     if (x instanceof Promise) {
       // 如果x的状态还没有确定，那么它是有可能被一个thenable决定最终状态和值，所以需要继续调用resolvePromise
@@ -263,20 +261,20 @@ class Promise {
         x.then(function(value) {
           resolvePromise(promise2, value, resolve, reject)
         }, reject)
-      } else { 
+      } else {
         // 如果x状态已经确定了，直接取它的状态
         x.then(resolve, reject)
       }
       return
     }
-  
+
     if (x !== null && (Object.prototype.toString(x) === '[object Object]' || Object.prototype.toString(x) === '[object Function]')) {
       try {
         // 因为x.then有可能是一个getter，这种情况下多次读取就有可能产生副作用，所以通过变量called进行控制
-        const then = x.then 
+        const then = x.then
         // then是函数，那就说明x是thenable，继续执行resolvePromise函数，直到x为普通值
-        if (typeof then === 'function') { 
-          then.call(x, (y) => { 
+        if (typeof then === 'function') {
+          then.call(x, (y) => {
             if (called) return;
             called = true;
             this.resolvePromise(promise2, y, resolve, reject);
@@ -377,7 +375,7 @@ class Promise {
     return new Promise((resolve, reject) => {
       for (const p of promiseList) {
         p.then((value) => {
-          resolve(value);   
+          resolve(value);
         }, reject);
       }
     });
@@ -395,10 +393,10 @@ class Promise {
     promise = new Promise((resolve, reject) => {
       this.resolvePromise(promise, value, resolve, reject);
     });
-  
+
     return promise;
   }
-  
+
   static reject(reason) {
     return new Promise((resolve, reject) => {
       reject(reason);
@@ -437,6 +435,28 @@ class Promise {
 ##### 4、阐述Promise的一些静态方法。
 
 `Promise.deferred`、`Promise.all`、`Promise.race`、`Promise.resolve`、`Promise.reject`等
+
+> **追问：Promise.deferred 的作用是什么？**
+>
+> **答**：`Promise.deferred` 是一个返回包含 `promise`、`resolve` 和 `reject` 三个属性的对象。它的核心作用是**允许在 Promise 构造函数外部控制 Promise 的状态**。
+>
+> 在标准的 Promise 用法中，你必须在 `new Promise` 的 executor 回调里获取 `resolve` 和 `reject`。但有时异步逻辑的触发点在外部（例如：多个回调函数共用一个 Promise），这时 deferred 模式就非常有用。
+>
+> **代码实现**：
+>
+> ```javascript
+> Promise.deferred = function () {
+>   let dfd = {};
+>   dfd.promise = new Promise((resolve, reject) => {
+>     dfd.resolve = resolve;
+>     dfd.reject = reject;
+>   });
+>   return dfd;
+> };
+> ```
+>
+> **现代替代方案**：
+> ES2024 中正式引入了 **`Promise.withResolvers()`**，其功能与 `Promise.deferred` 完全一致。
 
 - 提问概率：25%（相对基础的问题，一般在其他问题回答不是很理想的情况下提问，或者为了引出下一个题目而提问）
 - 加分项：越多越好
