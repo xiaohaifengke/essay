@@ -1,0 +1,7 @@
+interface:
+  display_name: "Interview Answer Writer"
+  short_description: "按 Markdown 文件名生成适合口述的精炼面试回答与高频追问"
+  default_prompt: "Use $interview-answer-writer to generate or extend an interview-answer Markdown file in this repo."
+
+policy:
+  allow_implicit_invocation: false
